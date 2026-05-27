@@ -1,0 +1,158 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMD8uHTDD79XuuX5aH4rU3n",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/minhtam3010050-jpg/TH_DEEP/blob/main/BT_TUAN3\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "**ANN**"
+      ],
+      "metadata": {
+        "id": "Q6GPMUqa6mEc"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "3.1. Nạp thư viện"
+      ],
+      "metadata": {
+        "id": "iSxg-2PN6qps"
+      }
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 3,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "D_HkXYVkwJsb",
+        "outputId": "b7541ee5-983d-4311-fa03-51d9fb5f060f"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting scikeras\n",
+            "  Downloading scikeras-0.13.0-py3-none-any.whl.metadata (3.1 kB)\n",
+            "Requirement already satisfied: keras>=3.2.0 in /usr/local/lib/python3.12/dist-packages (from scikeras) (3.13.2)\n",
+            "Requirement already satisfied: scikit-learn>=1.4.2 in /usr/local/lib/python3.12/dist-packages (from scikeras) (1.6.1)\n",
+            "Requirement already satisfied: absl-py in /usr/local/lib/python3.12/dist-packages (from keras>=3.2.0->scikeras) (1.4.0)\n",
+            "Requirement already satisfied: numpy in /usr/local/lib/python3.12/dist-packages (from keras>=3.2.0->scikeras) (2.0.2)\n",
+            "Requirement already satisfied: rich in /usr/local/lib/python3.12/dist-packages (from keras>=3.2.0->scikeras) (13.9.4)\n",
+            "Requirement already satisfied: namex in /usr/local/lib/python3.12/dist-packages (from keras>=3.2.0->scikeras) (0.1.0)\n",
+            "Requirement already satisfied: h5py in /usr/local/lib/python3.12/dist-packages (from keras>=3.2.0->scikeras) (3.16.0)\n",
+            "Requirement already satisfied: optree in /usr/local/lib/python3.12/dist-packages (from keras>=3.2.0->scikeras) (0.19.1)\n",
+            "Requirement already satisfied: ml-dtypes in /usr/local/lib/python3.12/dist-packages (from keras>=3.2.0->scikeras) (0.5.4)\n",
+            "Requirement already satisfied: packaging in /usr/local/lib/python3.12/dist-packages (from keras>=3.2.0->scikeras) (26.2)\n",
+            "Requirement already satisfied: scipy>=1.6.0 in /usr/local/lib/python3.12/dist-packages (from scikit-learn>=1.4.2->scikeras) (1.16.3)\n",
+            "Requirement already satisfied: joblib>=1.2.0 in /usr/local/lib/python3.12/dist-packages (from scikit-learn>=1.4.2->scikeras) (1.5.3)\n",
+            "Requirement already satisfied: threadpoolctl>=3.1.0 in /usr/local/lib/python3.12/dist-packages (from scikit-learn>=1.4.2->scikeras) (3.6.0)\n",
+            "Requirement already satisfied: typing-extensions>=4.6.0 in /usr/local/lib/python3.12/dist-packages (from optree->keras>=3.2.0->scikeras) (4.15.0)\n",
+            "Requirement already satisfied: markdown-it-py>=2.2.0 in /usr/local/lib/python3.12/dist-packages (from rich->keras>=3.2.0->scikeras) (4.2.0)\n",
+            "Requirement already satisfied: pygments<3.0.0,>=2.13.0 in /usr/local/lib/python3.12/dist-packages (from rich->keras>=3.2.0->scikeras) (2.20.0)\n",
+            "Requirement already satisfied: mdurl~=0.1 in /usr/local/lib/python3.12/dist-packages (from markdown-it-py>=2.2.0->rich->keras>=3.2.0->scikeras) (0.1.2)\n",
+            "Downloading scikeras-0.13.0-py3-none-any.whl (26 kB)\n",
+            "Installing collected packages: scikeras\n",
+            "Successfully installed scikeras-0.13.0\n"
+          ]
+        }
+      ],
+      "source": [
+        "# install required libraries\n",
+        "import pandas as pd\n",
+        "import numpy as np\n",
+        "\n",
+        "# data visualization packages\n",
+        "!pip install scikeras\n",
+        "import matplotlib.pyplot as plt\n",
+        "\n",
+        "# keras packages\n",
+        "import tensorflow as tf\n",
+        "import keras\n",
+        "from keras.models import Sequential\n",
+        "from keras.layers import Convolution2D\n",
+        "from keras.layers import MaxPooling2D\n",
+        "from keras.layers import Flatten\n",
+        "from keras.layers import Dense\n",
+        "from keras.layers import Dropout\n",
+        "\n",
+        "# Sửa lỗi ModuleNotFoundError: Thay thế keras.wrappers.scikit_learn bằng scikeras\n",
+        "from scikeras.wrappers import KerasClassifier\n",
+        "\n",
+        "# model evaluation packages\n",
+        "from sklearn.metrics import f1_score, roc_auc_score, log_loss\n",
+        "from sklearn.model_selection import cross_val_score, cross_validate\n",
+        "from sklearn.preprocessing import MinMaxScaler"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "3.2. Đọc tập dữ liệu FASHION MNIST"
+      ],
+      "metadata": {
+        "id": "ejNBvzo06u2M"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "fashion = tf.keras.datasets.fashion_mnist\n",
+        "(X_train, y_train), (X_test, y_test) = fashion.load_data()\n",
+        "print(X_train.shape, y_train.shape, X_test.shape, y_test.shape)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "nJO32IIV6sNV",
+        "outputId": "702634a1-c970-4579-cae2-a3c688069710"
+      },
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-datasets/train-labels-idx1-ubyte.gz\n",
+            "\u001b[1m29515/29515\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m0s\u001b[0m 0us/step\n",
+            "Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-datasets/train-images-idx3-ubyte.gz\n",
+            "\u001b[1m26421880/26421880\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m0s\u001b[0m 0us/step\n",
+            "Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-datasets/t10k-labels-idx1-ubyte.gz\n",
+            "\u001b[1m5148/5148\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m0s\u001b[0m 0us/step\n",
+            "Downloading data from https://storage.googleapis.com/tensorflow/tf-keras-datasets/t10k-images-idx3-ubyte.gz\n",
+            "\u001b[1m4422102/4422102\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m0s\u001b[0m 0us/step\n",
+            "(60000, 28, 28) (60000,) (10000, 28, 28) (10000,)\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
